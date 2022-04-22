@@ -1,21 +1,59 @@
+SmoothScroll({
+    stepSize: 40,
+    animationTime: 600,
+    accelerationDelta: 90,
+    accelerationMax: 2,
+})
+
+const controller = new ScrollMagic.Controller({ globalSceneOptions: { triggerHook: "onLeave", duration: "200%" } });
+
+const slides = document.querySelectorAll(".panel");
+
+for (let i = 0; i < slides.length; i++) {
+    new ScrollMagic.Scene({
+        triggerElement: slides[i]
+    })
+        .setPin(slides[i], { pushFollowers: false })
+        .addTo(controller);
+}
+
+
 const animItems = document.querySelectorAll('.anim-items');
 const divScroll = document.querySelector('.gallery_img');
 const animStart = 3;
 const offDivSc = divScroll.offsetHeight;
 let scrollDv = window.innerHeight - offDivSc / animStart;
+const galeryImg = document.querySelectorAll(".imgBlock")
+
+
+if (galeryImg.length > 0) {
+    galeryImg.forEach(img => {
+        img.addEventListener('click', () => {
+            const block = document.createElement("div")
+            const content = `
+		<div >
+            <img class="activImgBlock" src="${img.src}">
+		</div>
+	`
+            block.classList.add('blockImg')
+            document.body.classList.add('stop-scrolling')
+            document.body.prepend(block);
+            block.insertAdjacentHTML("afterbegin", content);
+            block.addEventListener('click', (e) => {
+                if (e.target === block) {
+                    document.body.removeChild(block);
+                    document.body.classList.remove('stop-scrolling');
+                }
+            });
+            // console.log(img.src);
+        })
+    });
+}
 
 if (animItems.length > 0) {
     window.addEventListener('scroll', animOnScroll);
 
     function animOnScroll() {
-        let dvTop = divScroll.getBoundingClientRect().top;
-
-        if (dvTop <= scrollDv && dvTop > 0) {
-            console.log(111);
-        }
-
-
-
 
         for (let i = 0; i < animItems.length; i++) {
             const animItem = animItems[i];
@@ -81,20 +119,20 @@ $('.gallery_img').scroolly([{
 
 
 $('.hedMenu').scroolly([
-{
-    from: 'con-top',
-    to: 'con-bottom - 100el = vp-top',
-    css:{
-        position: 'fixed',
-        right: '35%',
-        top: '5%'
+    {
+        from: 'con-top',
+        to: 'con-bottom - 100el = vp-top',
+        css: {
+            position: 'fixed',
+            right: '35%',
+            top: '5%'
+        }
+    },
+    {
+        from: 'con-bottom - 100el = vp-top',
+        css: {
+            position: 'absolute'
+        }
     }
-},
-{   
-    from: 'con-bottom - 100el = vp-top',
-    css:{
-        position: 'absolute'
-    }
-}
-    
+
 ], $('.header'));
